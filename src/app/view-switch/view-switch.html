@@ -1,0 +1,31 @@
+<div id="view-switch">
+  <div id="navigation-bar">
+    <button (click)="switchToDashboard()">DASHBOARD</button>
+    <button (click)="switchToPos()">POS</button>
+    <button (click)="switchToShop()">SHOP</button>
+    <button (click)="switchToProfile()">PROFILE</button>
+    <button (click)="switchToSettings()">SETTINGS</button>
+  </div>
+  <div id="view-panel">
+    @switch (view()) {
+      @case ('PROFILE') {
+        <rm-profile />
+      }
+      @case ('SETTINGS') {
+        <rm-settings />
+      }
+      @case ('DASHBOARD') {
+        <rm-dashboard />
+      }
+      @case ('POS') {
+        <rm-pos />
+      }
+      @case ('SHOP') {
+        <div>CREATE A SHOP VIEW</div>
+      }
+      @default {
+        <rm-dashboard />
+      }
+    }
+  </div>
+</div>
