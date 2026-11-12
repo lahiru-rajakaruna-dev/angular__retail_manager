@@ -1,0 +1,21 @@
+<section>
+  <div></div>
+  <div>
+    <div>
+      <p>RetailManager</p>
+      <p>BLAZE Technologies</p>
+    </div>
+    <p>See where your money is leaking out behind your eyes.</p>
+    <form action="">
+      <input #phoneInputField type="text" (input)="onPhoneInput($event)" value="{{ phone() }}" />
+      <input
+        #passwordInputField
+        type="password"
+        (input)="onPasswordInput($event)"
+        value="{{ password() }}"
+      />
+      <button (click)="signup($event)">Sign Up</button>
+      <button (click)="login($event)">Log In</button>
+    </form>
+  </div>
+</section>
