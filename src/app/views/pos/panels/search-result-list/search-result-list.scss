@@ -1,0 +1,24 @@
+#search-results {
+  width: 100%;
+  height: fit-content;
+  max-height: 250px;
+  padding: 4px;
+  background-color: white;
+  border: 1px solid hsl(240, 30, 90);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 2px;
+}
+.search-result {
+  list-style: none;
+  padding: 12px;
+  background-color: hsl(240, 50, 90);
+}
+.result-product {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-around;
+}

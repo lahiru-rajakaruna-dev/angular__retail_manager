@@ -1,0 +1,18 @@
+#search {
+  grid-row-start: 1;
+  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 11;
+}
+
+#search-bar {
+  width: 100%;
+  height: fit-content;
+  font-size: 2rem;
+  border: 1px solid hsl(240, 30, 70);
+  border-radius: 8px;
+}
+
+:host {
+  display: contents;
+}

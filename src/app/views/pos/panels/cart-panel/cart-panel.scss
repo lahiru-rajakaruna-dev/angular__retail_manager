@@ -1,0 +1,10 @@
+#cart {
+  grid-row-start: 3;
+  grid-row-end: 11;
+  grid-column-start: 1;
+  grid-column-end: 11;
+}
+
+:host {
+  display: contents;
+}

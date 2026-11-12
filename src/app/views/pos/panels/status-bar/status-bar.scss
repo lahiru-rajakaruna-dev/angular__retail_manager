@@ -1,0 +1,10 @@
+#status_bar {
+  grid-row-start: 11;
+  grid-row-end: 13;
+  grid-column-start: 1;
+  grid-column-end: 11;
+}
+
+:host {
+  display: contents;
+}

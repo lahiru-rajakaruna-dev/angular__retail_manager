@@ -1,0 +1,10 @@
+<div id="search" class="panel">
+  <input
+    #queryInput
+    id="search-bar"
+    (input)="handleInput($event)"
+    tabindex="1"
+    value="{{ query() }}"
+  />
+  <label for="search">SEARCH: PREESS F1</label>
+</div>
