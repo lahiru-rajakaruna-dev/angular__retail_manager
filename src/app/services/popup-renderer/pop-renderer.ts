@@ -62,7 +62,7 @@ export class PopRenderer {
     });
   }
 
-  renderPopup(popUp: Type<unknown>, anchorElement: ElementRef) {
+  renderPopup<T>(popUp: Type<T>, anchorElement: ElementRef): ComponentRef<T> {
     const popupRoot = this.checkPopupRoot();
     const popupWrapper = this.createPopupWrapper();
     this.anchorPopupWrapper(popupWrapper, anchorElement.nativeElement);
