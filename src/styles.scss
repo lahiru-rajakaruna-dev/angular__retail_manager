@@ -3,15 +3,25 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  transition: all ease-in-out 230ms;
 }
 
 #modal-root {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
+  z-index: 1500;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: hsla(215, 95%, 3%, 0.3);
+}
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%, 0%);
 }
 
 .panel {
@@ -30,5 +40,5 @@ body {
   width: 0;
   height: 0;
   position: absolute;
-  z-index: 10000;
+  z-index: 1000;
 }
