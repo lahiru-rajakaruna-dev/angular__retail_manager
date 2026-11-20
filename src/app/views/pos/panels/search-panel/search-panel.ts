@@ -7,10 +7,10 @@ import { Component, ElementRef, output, signal, viewChild, ViewChild } from '@an
   styleUrl: './search-panel.scss',
 })
 export class SearchPanel {
-  searchBar = viewChild<ElementRef<any>>('queryInput');
-  inputTimeOut: number | undefined;
+  private searchBar = viewChild<ElementRef<any>>('queryInput');
+  private inputTimeOut: number | undefined;
 
-  query = signal('');
+  protected query = signal('');
   outputQuery = output<string>();
 
   handleInput(event: Event) {
@@ -22,5 +22,13 @@ export class SearchPanel {
       this.query.set(data ?? '');
       this.outputQuery.emit(this.query());
     }, 250);
+  }
+
+  cleanupSearchbar() {
+    this.query.set('');
+  }
+
+  getSearchbarElement() {
+    return this.searchBar();
   }
 }
