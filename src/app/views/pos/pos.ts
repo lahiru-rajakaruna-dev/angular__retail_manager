@@ -1,20 +1,12 @@
 import {
-  ApplicationRef,
-  BaseResourceOptions,
   Component,
   ComponentRef,
-  createComponent,
   DOCUMENT,
   effect,
-  ElementRef,
-  EnvironmentInjector,
   inject,
-  OnInit,
   resource,
   signal,
   viewChild,
-  ViewChild,
-  ViewRef,
   WritableSignal,
 } from '@angular/core';
 import { SearchResultList } from './panels/search-result-list/search-result-list';
@@ -23,8 +15,11 @@ import { Cart } from './panels/cart-panel/cart-panel';
 import { PaymentPanel } from './panels/payment-panel/payment-panel';
 import { BillPanel } from './panels/bill-panel/bill-panel';
 import { StatusBar } from './panels/status-bar/status-bar';
-import { PopRenderer } from '../../pop-renderer';
+import { PopRenderer } from '../../services/popup-renderer/pop-renderer';
 import api from '../../api';
+import { Product, SaleItem, SalePayment } from '../../constants';
+import { ModalRenderer } from '../../services/modal-renderer/modal-renderer';
+import { InsertCartItemModal } from '../../Modals/insert-cart-item-modal/insert-cart-item-modal';
 
 @Component({
   selector: 'rm-pos',
@@ -33,52 +28,72 @@ import api from '../../api';
   styleUrl: './pos.scss',
 })
 export class Pos {
+  popupRenderer = inject(PopRenderer);
+  modalRenderer = inject(ModalRenderer);
+
   searchPanel = viewChild(SearchPanel);
   document = inject(DOCUMENT);
-  popupRenderer = inject(PopRenderer);
   popUpRef: ComponentRef<SearchResultList> | null = null;
-  inputTimer: number | null = null;
   searchQuery: WritableSignal<string | undefined> = signal(undefined);
   searchResultContainer = signal<ComponentRef<any> | undefined>(undefined);
 
-  products = resource<
-    { id: string; name: string; price: BigInt; inventory: BigInt }[],
-    string | undefined
-  >({
+  selectedProduct = signal<Product | undefined>(undefined);
+  cart = signal<SaleItem[] | undefined>(undefined);
+  payment = signal<SalePayment | undefined>(undefined);
+
+  inputTimer: number | null = null;
+
+  products = resource<Product[], string | undefined>({
     defaultValue: [],
     params: () => {
       return this.searchQuery() ?? undefined;
     },
-    async loader({ abortSignal, params, previous }) {
-      console.log(params);
+    async loader(opts) {
       const response = await api.products.getAllProducts();
       const products = await response.json();
-      return products;
+      return [
+        {
+          code: '1231',
+          id: '1',
+          inventory: 500,
+          price: 120.89,
+          name: 'Soda',
+          createdAt: new Date('2026-01-05').getTime(),
+          updatedAt: new Date('2026-01-05').getTime(),
+        },
+        {
+          code: '1231',
+          id: '2',
+          inventory: 500,
+          price: 120.89,
+          name: 'Soda',
+          createdAt: new Date('2026-01-05').getTime(),
+          updatedAt: new Date('2026-01-05').getTime(),
+        },
+        {
+          code: '1231',
+          id: '3',
+          inventory: 500,
+          price: 120.89,
+          name: 'Soda',
+          createdAt: new Date('2026-01-05').getTime(),
+          updatedAt: new Date('2026-01-05').getTime(),
+        },
+      ];
     },
   });
 
   constructor() {
     effect(() => {
-      if (!this.products.hasValue()) {
-        return;
+      console.log(this.products.status());
+      if (this.products.status() === 'resolved') {
+        if (this.products.hasValue()) {
+          this.renderSearchResultList();
+        }
       }
-      const products = this.products.value();
-      if (products.length <= 0) {
-        return;
+      if (this.products.status() === 'error') {
+        console.warn(this.products.error());
       }
-      this.renderSearchResultList();
-    });
-    effect(() => {
-      if (!this.searchResultContainer()) {
-        return;
-      }
-
-      (this.searchPanel()?.searchBar()?.nativeElement as HTMLInputElement).addEventListener(
-        'blur',
-        (e) => {
-          // this.searchResultContainer()?.destroy();
-        },
-      );
     });
   }
 
@@ -86,19 +101,67 @@ export class Pos {
     this.searchQuery.set(value);
   }
 
-  renderSearchResultList() {
-    console.log(this.searchPanel()?.searchBar());
-    if (!this.searchPanel()) {
+  addItemToCart(item: SaleItem) {
+    if (!item) {
       return;
     }
-    if (!this.searchPanel()!.searchBar()) {
-      throw new Error('Could not find the search bar');
-    }
 
+    this.cart.update((items) => {
+      const itemsArray: SaleItem[] = [];
+      if (items) {
+        itemsArray.push(...items);
+      }
+      items!.push(item);
+      return itemsArray;
+    });
+  }
+
+  removeItemFromCart(item: SaleItem) {}
+
+  private showCartItemInsertModal() {
+    const modalRef = this.modalRenderer.renderModal(InsertCartItemModal);
+  }
+
+  private onProductSelect() {
+    this.showCartItemInsertModal();
+  }
+
+  private cleanupSearchbar() {
+    this.searchPanel()?.cleanupSearchbar();
+  }
+
+  private attachEventHandlersToResultList(ref: ComponentRef<SearchResultList>) {
+    ref.instance.itemSelect.subscribe(() => {
+      this.onProductSelect();
+      this.cleanupSearchbar();
+      ref.destroy();
+    });
+    ref.instance.close.subscribe(() => {
+      ref.destroy();
+    });
+  }
+
+  private setSearchResultListInputs(ref: ComponentRef<SearchResultList>) {
+    ref.setInput('itemList', this.products.value());
+  }
+
+  private checkResultListRendereReady() {
+    if (!this.searchPanel() || this.searchPanel()?.getSearchbarElement() === undefined) {
+      return false;
+    }
+    return true;
+  }
+
+  private renderSearchResultList() {
+    if (!this.checkResultListRendereReady()) {
+      return;
+    }
     const popupRef = this.popupRenderer.renderPopup(
       SearchResultList,
-      this.searchPanel()!.searchBar()!,
+      this.searchPanel()!.getSearchbarElement()!,
     );
+    this.attachEventHandlersToResultList(popupRef);
+    this.setSearchResultListInputs(popupRef);
     this.searchResultContainer.set(popupRef);
   }
 }
