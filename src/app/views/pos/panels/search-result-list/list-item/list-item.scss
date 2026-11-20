@@ -1,0 +1,28 @@
+.item {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  list-style: none;
+  background-color: white;
+  cursor: pointer;
+}
+.item-content-wrapper {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.item:hover {
+  background-color: hsl(210, 55%, 90%);
+}
+.item:first-child {
+  border-radius: 6px 6px 0px 0px;
+}
+.item:last-child {
+  border-radius: 6px 6px 0px 0px;
+}
