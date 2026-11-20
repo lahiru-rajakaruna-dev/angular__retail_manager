@@ -1,9 +1,24 @@
-<ul id="search-results">
-  <li class="search-result">
-    <div class="result-product">
-      <p>Product Name</p>
-      <p>Prodcut Price</p>
-      <p>Product Inventory</p>
+<div id="search-result-container">
+  <div id="header">
+    <div class="header-cell">
+      <p class="caption">Code</p>
     </div>
-  </li>
-</ul>
+    <div class="header-cell">
+      <p class="caption">Name</p>
+    </div>
+    <div class="header-cell">
+      <p class="caption">Inventory</p>
+    </div>
+    <div class="header-cell">
+      <p class="caption">Price</p>
+    </div>
+    <div class="header-cell">
+      <p class="caption">Updated At</p>
+    </div>
+  </div>
+  <ul id="list">
+    @for (item of itemList(); track item.id) {
+      <rm-list-item [item]="item" (onSelect)="onItemSelect($event)" />
+    }
+  </ul>
+</div>
